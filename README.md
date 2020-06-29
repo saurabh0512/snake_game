@@ -1,1 +1,1 @@
-# snake_game
+SNAKE GAME USING TKINTER GUI
