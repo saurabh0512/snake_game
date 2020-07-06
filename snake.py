@@ -27,12 +27,16 @@ class mov_tiles():
         self.y = 0
         self.count = 0
         self.my_rectangles=[]
-        self.flag = 10
-        
-        self.window.bind('<KeyPress-Left>' ,  self.left)
-        self.window.bind('<KeyPress-Right>' , self.right)
-        self.window.bind('<KeyPress-Up>' ,  self.up)
-        self.window.bind('<KeyPress-Down>' , self.down)
+        #self.flag = 10
+        self.replay= True
+        #self.window.bind('<KeyPress-Left>' ,  self.left)
+        #self.window.bind('<KeyPress-Right>' , self.right)
+        #self.window.bind('<KeyPress-Up>' ,  self.up)
+        #self.window.bind('<KeyPress-Down>' , self.down)
+        self.curr_value = 'Right'
+        self.value= 'Right'
+        self.not_allowed = {'Left' : 'Right', 'Right' : 'Left', 'Up':'Down', 'Down':'Up'}
+        self.window.bind('<Key>' , self.keypress)
         
         self.initialize_grid()
         
@@ -71,23 +75,47 @@ class mov_tiles():
     #get apple coordinates if encountered change coordinates of snake
 
     def initialize_game(self):
-        a, b, c, d = self.canvas.coords(self.snake)
-        
-        if ((a < size and c > 0) and (b < size and d > 0)):
-            self.canvas.move(self.snake, self.x, self.y)
-            self.update_snake()
+        if self.replay :
+            if self.not_allowed[self.curr_value] != self.value:
+                if self.value == 'Left':
+                    self.x=-(snake_width)
+                    self.y= 0
+                    self.curr_value = 'Left'
             
-            if self.count > 0:
-                if self.canvas.coords(self.snake) in self.my_variables:
-                    self.end_game()
-                else :
-                    self.my_variables.clear()
-                    self.my_variables.append([a, b, c ,d])
-                    for i in range(self.count):
-                        self.move_rect(i)
-            self.canvas.after(200, self.initialize_game)
-        else :
-            self.end_game()
+                elif self.value == 'Right':
+                    self.x = (snake_width)
+                    self.y = 0
+                    self.curr_value = 'Right'
+            
+                elif self.value == 'Down':
+                    self.x=0
+                    self.y=(snake_width)
+                    self.curr_value = 'Down'
+                    
+                elif self.value == 'Up':
+                    self.x = 0
+                    self.y = -(snake_width)
+                    self.curr_value = 'Up'
+                
+            if ((self.canvas.coords(self.snake)[0]< size and self.canvas.coords(self.snake)[2] > 0) 
+                and (self.canvas.coords(self.snake)[1] < size and self.canvas.coords(self.snake)[3] > 0)) :
+                a, b, c, d = self.canvas.coords(self.snake)
+                self.canvas.move(self.snake, self.x, self.y)
+                self.update_snake()
+                
+                if self.count > 0:
+                    if self.canvas.coords(self.snake) in self.my_variables:
+                        self.replay = False
+                        self.end_game()
+                    else :
+                        self.my_variables.clear()
+                        self.my_variables.append([a, b, c ,d])
+                        for i in range(self.count):
+                            self.move_rect(i)
+                self.canvas.after(200, self.initialize_game)
+            else :
+                self.replay = False
+                self.end_game()
         
     def update_snake(self):
         if  ( self.canvas.coords(self.snake) == self.coordinates):
@@ -109,11 +137,11 @@ class mov_tiles():
         #self.canvas.after(1000, self.window.destroy())
         #mov_tiles()
         
-    def left(self,event):
-        if not self.flag == 0 :
-            self.x=-(snake_width)
-            self.y= 0
-            self.flag = 0
+    def keypress(self,event):
+        keys=['Up','Down','Right','Left']
+        
+        if (event.keysym in keys):
+            self.value = event.keysym
 
     def right(self,event):
         if not self.flag == 0:
