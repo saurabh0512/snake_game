@@ -143,23 +143,23 @@ class mov_tiles():
         if (event.keysym in keys):
             self.value = event.keysym
 
-    def right(self,event):
-        if not self.flag == 0:
-            self.x = (snake_width)
-            self.y = 0
-            self.flag = 0
+    #def right(self,event):
+     #   if not self.flag == 0:
+      #      self.x = (snake_width)
+       #     self.y = 0
+        #    self.flag = 0
         
-    def up(self,event):
-        if not self.flag == 1:
-            self.x= 0
-            self.y=-(snake_width)
-            self.flag = 1
+    #def up(self,event):
+     #   if not self.flag == 1:
+      #      self.x= 0
+       #     self.y=-(snake_width)
+        #    self.flag = 1
         
-    def down(self,event):
-        if not self.flag == 1:
-            self.x=0
-            self.y=(snake_width)
-            self.flag = 1
+    #def down(self,event):
+     #   if not self.flag == 1:
+      #      self.x=0
+       #     self.y=(snake_width)
+        #    self.flag = 1
             
 game=mov_tiles()
 game.mainloop()
