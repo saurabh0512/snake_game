@@ -11,41 +11,52 @@ size=300
 snake_width=30
 colour='sienna4'
 
-class mov_tiles():
+class mov_snake():
     def __init__(self):
         self.window = Tk()
         self.window.title("Snake")
         self.canvas = Canvas(self.window , bg='alice blue', width = size , height= size)
         self.snake = self.canvas.create_rectangle(120, 120 ,150, 150, fill='Black')
         self.coordinates= []
-        #self.coord = [i*15 for i in range(0,len(20))]
+
         self.my_variables=[self.canvas.coords(self.snake)]
         self.mouse =self.canvas.create_rectangle(self.mouse_coordinates() , fill =colour)
         self.canvas.pack()
-        #self.window.resizable(0,0)
+
         self.x = 0
         self.y = 0
         self.count = 0
         self.my_rectangles=[]
-        #self.flag = 10
-        self.replay= True
-        #self.window.bind('<KeyPress-Left>' ,  self.left)
-        #self.window.bind('<KeyPress-Right>' , self.right)
-        #self.window.bind('<KeyPress-Up>' ,  self.up)
-        #self.window.bind('<KeyPress-Down>' , self.down)
+        self.mode = 'in'
+        self.replay= False
+        
+        
         self.curr_value = 'Right'
         self.value= 'Right'
         self.not_allowed = {'Left' : 'Right', 'Right' : 'Left', 'Up':'Down', 'Down':'Up'}
-        self.window.bind('<Key>' , self.keypress)
         
         self.initialize_grid()
         
-        play = Button(self.window, text="Play", command=self.initialize_game)
-        play.pack()
+        self.window.play=Button(self.window, text='Play', callback=self.play_game())
+        self.window.play.pack()
         
     def mainloop(self):
         self.window.mainloop()
+            
+    
+    def reset_game(self):
+        self.canvas = Canvas(self.window , bg='alice blue', width = size , height= size)
+        self.snake = self.canvas.create_rectangle(120, 120, 150, 150, fill='Black') 
+        self.coordinates= []
+        self.my_variables=[self.canvas.coords(self.snake)]
+        self.mouse =self.canvas.create_rectangle(self.mouse_coordinates() , fill =colour)
+        self.canvas.pack()
+        self.initialize_grid()
         
+    def play_game(self):
+        self.replay = True
+        self.window.bind('<Key>' , self.key_press)
+        self.initialize_game()
     # ---------------------------------------    
     # Initialization Functions
     # ---------------------------------------
@@ -62,10 +73,8 @@ class mov_tiles():
         for i in self.my_variables:
             if (i[0],i[1]) in list1:
                 list1.remove((i[0],i[1]))
-    
         x,y = random.choice(list1)
         self.coordinates.extend((x, y, x+30, y+30))
-        
         return self.coordinates
         
     
@@ -97,14 +106,16 @@ class mov_tiles():
                     self.y = -(snake_width)
                     self.curr_value = 'Up'
                 
-            if ((self.canvas.coords(self.snake)[0]< size and self.canvas.coords(self.snake)[2] > 0) 
-                and (self.canvas.coords(self.snake)[1] < size and self.canvas.coords(self.snake)[3] > 0)) :
+            if ((self.canvas.coords(self.snake)[0]< size and self.canvas.coords(self.snake)[2] > 0) and 
+                (self.canvas.coords(self.snake)[1] < size and self.canvas.coords(self.snake)[3] > 0)) :
+                self.mode = 'in'
                 a, b, c, d = self.canvas.coords(self.snake)
                 self.canvas.move(self.snake, self.x, self.y)
                 self.update_snake()
                 
                 if self.count > 0:
                     if self.canvas.coords(self.snake) in self.my_variables:
+                        self.mode = 'intercept'
                         self.replay = False
                         self.end_game()
                     else :
@@ -114,9 +125,11 @@ class mov_tiles():
                             self.move_rect(i)
                 self.canvas.after(200, self.initialize_game)
             else :
+                self.mode = 'out'
                 self.replay = False
                 self.end_game()
         
+    
     def update_snake(self):
         if  ( self.canvas.coords(self.snake) == self.coordinates):
             self.coordinates.clear()
@@ -130,36 +143,15 @@ class mov_tiles():
         
     def end_game(self):
         self.canvas.delete('all')
-        self.canvas.create_text(size/2, size/2, font="cmr 30 bold", text="GAME OVER")
+        self.canvas.create_text(size/2, size/4, font="cmr 30 bold", text="GAME OVER")
 
-        self.canvas.create_text(size/2, 3*size/4, font="cmr 30 bold", text='SCORE :' + str(self.count)+'\n')
+        self.canvas.create_text(size/2, size/2, font="cmr 30 bold", text='SCORE :' + str(self.count)+'\n')
         
-        #self.canvas.after(1000, self.window.destroy())
-        #mov_tiles()
-        
-    def keypress(self,event):
+    def key_press(self,event):
         keys=['Up','Down','Right','Left']
         
         if (event.keysym in keys):
             self.value = event.keysym
-
-    #def right(self,event):
-     #   if not self.flag == 0:
-      #      self.x = (snake_width)
-       #     self.y = 0
-        #    self.flag = 0
-        
-    #def up(self,event):
-     #   if not self.flag == 1:
-      #      self.x= 0
-       #     self.y=-(snake_width)
-        #    self.flag = 1
-        
-    #def down(self,event):
-     #   if not self.flag == 1:
-      #      self.x=0
-       #     self.y=(snake_width)
-        #    self.flag = 1
-            
-game=mov_tiles()
+    
+game = mov_snake()
 game.mainloop()
