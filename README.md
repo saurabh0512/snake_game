@@ -1,3 +1,5 @@
 SNAKE GAME USING TKINTER GUI
 
-![alt text](Snake 2020-10-14 16-37-33.gif)
+<p align="center">
+<img src="Snake 2020-10-14 16-37-33.gif">
+</p>
