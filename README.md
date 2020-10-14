@@ -5,6 +5,6 @@
 </p>
 
 ## Instructions for playing:
-1.Game begins after clicking the play button
-2.Use Arrow Keys for movement
-3.Result will be displayed at the end of the game
+<p>1.Game begins after clicking the play button<br>
+2.Use Arrow Keys for movement<br>
+3.Result will be displayed at the end of the game</p>
