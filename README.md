@@ -1,3 +1,3 @@
 SNAKE GAME USING TKINTER GUI
 
-![Alt Text](Snake 2020-10-14 16-37-33.gif)
+![alt text](Snake 2020-10-14 16-37-33.gif)
